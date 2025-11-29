@@ -27,6 +27,7 @@
     <a href="index.php">Home</a>
     <a href="registry.php">Register</a>
     <a href="employeelogin.php">Employee Login</a>
+    <a href="customerlogin.php">Customer Login</a>
 </div>
 
 <hr>
