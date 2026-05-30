@@ -70,12 +70,12 @@ if(isset($_GET['delid']))
 			}
 			echo "<tr><td>";
 ?>
-<div class="w3-content w3-section" style="max-width:500px">
+<div style="width:150px; height:120px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#f9f9f9;">
 <?php
 for($iimg = 0; $iimg <count($arr_pro_img); $iimg++)
 {
 ?>
-  <img class="mySlides<?php echo $rs[0]; ?> " src="imgproduct/<?php echo $arr_pro_img[$iimg]; ?>" style="width:100%">
+  <img class="mySlides<?php echo $rs[0]; ?>" src="imgproduct/<?php echo $arr_pro_img[$iimg]; ?>" style="max-width:150px; max-height:120px; width:auto; height:auto; object-fit:contain;">
 <?php
 }
 ?>
