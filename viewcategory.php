@@ -46,7 +46,6 @@ if(isset($_GET['delid']))
 <table id="datatable" class="table table-striped table-bordered">
 	<thead>
 		<tr>
-			<th>Icon</th>
 			<th>Category Name</th>
 			<th>Description</th>
 			<th>Status</th>
@@ -60,32 +59,13 @@ if(isset($_GET['delid']))
 	while($rs = mysqli_fetch_array($qsql))
 	{
 		echo "<tr>
-			<td>";
-			if($rs['category_icon'] == "")
-			{
-				echo "<img src='img/No-Image-Available.png' style='width: 200px;height:175px;'>";
-			}
-			else if(file_exists("imgcategory/".$rs['category_icon']))
-			{
-				echo "<img src='imgcategory/$rs[category_icon]' style='width: 200px;height:175px;'>";
-			}
-			else
-			{
-				echo "<img src='img/No-Image-Available.png' style='width: 200px;height:175px;'>";
-			}
-
-			echo "</td>			
 			<td>$rs[category_name]</td>
 			<td>$rs[description]</td>
 			<td>$rs[status]</td>
 			<td>
-
-				<a href='category.php?editid=$rs[0]' class='btn btn-info' >Edit</a>
-			
-			<a href='viewcategory.php?delid=$rs[0]' class='btn btn-danger' onclick='return confirmdelete()'>Delete</a>
-			
+				<a href='category.php?editid=$rs[0]' class='btn btn-info'>Edit</a>
+				<a href='viewcategory.php?delid=$rs[0]' class='btn btn-danger' onclick='return confirmdelete()'>Delete</a>
 			</td>
-			
 			</tr>";
 	}
 	?>

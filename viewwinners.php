@@ -29,24 +29,32 @@ if(isset($_GET['delid']))
 	<thead>
 		<tr>
 		    <th>Customer</th>
-			<th >Product</th>
-			<th>Winners image</th>
-			<th>Winning bid</th>
-			<th>End date</th>
+			<th>Product</th>
+			<th>Winning Bid</th>
+			<th>End Date</th>
+			<th>Payment Status</th>
 		</tr>
 		</thead>
 		<tbody>
 		<?php
-		$sql = "select * from winners LEFT JOIN customer ON winners.customer_id =customer.customer_id LEFT JOIN product ON winners.product_id=product.product_id";
+		$sql = "SELECT winners.*, customer.customer_name, customer.email_id, customer.mobile_no,
+		        product.product_name, product.product_id as prod_id
+		        FROM winners 
+		        LEFT JOIN customer ON winners.customer_id = customer.customer_id 
+		        LEFT JOIN product ON winners.product_id = product.product_id
+		        ORDER BY winners.winner_id DESC";
 		$qsql = mysqli_query($con,$sql);
 		while($rs = mysqli_fetch_array($qsql))
 		{
+			$status_color = ($rs['status'] == 'Active') ? 'green' : 'orange';
+			$status_label = ($rs['status'] == 'Active') ? 'Paid' : 'Pending Payment';
 			echo "<tr>
-			    <td>$rs[customer_name]</td>
-				<td>$rs[product_name]</td>
-			<td><img src='imgwinner/$rs[winners_image]' width='200px;' ></td>
-				<td>$rs[winning_bid]</td>
-				<td>$rs[end_date]</td></tr>";
+			    <td><b>$rs[customer_name]</b><br>$rs[email_id]<br>$rs[mobile_no]</td>
+				<td><b>$rs[product_name]</b><br>Product ID: $rs[prod_id]</td>
+				<td><b>Rs. $rs[winning_bid]</b></td>
+				<td>$rs[end_date]</td>
+				<td><span style='color:$status_color; font-weight:bold;'>$status_label</span></td>
+			</tr>";
 		}
 		?>
 	</tbody>

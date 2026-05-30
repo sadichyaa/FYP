@@ -30,12 +30,13 @@ if(isset($_POST['submit']))
 	} 
 	else
 	{ 
-		$sql = "INSERT INTO  product (customer_id,category_id,product_name,product_description,starting_bid,ending_bid,start_date_time,end_date_time,product_cost,product_image,product_warranty,product_delivery,company_name,status) VALUES('$_SESSION[customer_id]','$_POST[category_id]','$_POST[product_name]','$productdescription','$_POST[starting_bid]','$_POST[starting_bid]','$_POST[start_date] $_POST[start_time]','$_POST[end_date] $_POST[end_time]','$_POST[product_cost]','$arrimg','$_POST[product_warranty]','$_POST[product_delivery]','$_POST[company_name]','Active')";
+		$owner_id = isset($_SESSION['customer_id']) ? $_SESSION['customer_id'] : $_SESSION['employee_id'];
+		$sql = "INSERT INTO  product (customer_id,category_id,product_name,product_description,starting_bid,ending_bid,start_date_time,end_date_time,product_cost,product_image,product_warranty,product_delivery,company_name,status) VALUES('$owner_id','$_POST[category_id]','$_POST[product_name]','$productdescription','$_POST[starting_bid]','$_POST[starting_bid]','$_POST[start_date] $_POST[start_time]','$_POST[end_date] $_POST[end_time]','$_POST[product_cost]','$arrimg','$_POST[product_warranty]','$_POST[product_delivery]','$_POST[company_name]','Active')";
 		$qsql = mysqli_query($con,$sql);
 		if(mysqli_affected_rows($con) == 1)
 		{
 			echo "<script>alert('Product record inserted successfully..');</script>";
-			
+			echo "<script>window.location='viewproduct.php';</script>";
 		}
 		else
 		{
@@ -227,22 +228,19 @@ else
 	<div class="row">
 		<div class="col-md-6 col-lg-6">		
 			<label class="control-label">End date</label>
-			<div id="idchangetodate"><?php include("ajaxenddate.php"); ?></div>
+			<?php if(isset($_GET['editid'])): ?>
+				<input class="form-control" name="end_date" type="date" value="<?php echo date('Y-m-d', strtotime($rsedit['end_date_time'])); ?>" readonly style="background-color:#fcf8e3;">
+			<?php else: ?>
+				<input class="form-control" name="end_date" id="end_date" type="date" value="<?php echo date('Y-m-d'); ?>">
+			<?php endif; ?>
 		</div>
 		<div class="col-md-6 col-lg-6">		
 			<label class="control-label">End time</label>
-			<div id="idend_time">
-				<input class="form-control"  style="background-color:#fcf8e3;" name="end_time"  type="time" placeholder="End time"  value="<?php 
-				if(isset($_GET['editid']))
-				{
-				echo date("H:i:s",strtotime($rsedit['end_date_time']));
-				}
-				else
-				{
-					echo date("H:i");
-				}
-				?>"  >
-			</div>
+			<?php if(isset($_GET['editid'])): ?>
+				<input class="form-control" name="end_time" type="time" value="<?php echo date('H:i:s', strtotime($rsedit['end_date_time'])); ?>" readonly style="background-color:#fcf8e3;">
+			<?php else: ?>
+				<input class="form-control" name="end_time" id="end_time" type="time" value="<?php echo date('H:i'); ?>">
+			<?php endif; ?>
 		</div>
 	</div>
 	
@@ -306,7 +304,7 @@ if(isset($_SESSION['employeeid']))
 
 ?>
 	<div class="contact-submit-btn"><hr>
-		<center><button  type="submit" name="submit"  class="btn btn-info"  onclick="return validateform()">Click Here to Submit</button></center>
+		<center><button type="submit" name="submit" id="submitbtn" class="btn btn-info" onclick="if(validateform()){this.disabled=true; this.innerText='Submitting...'; return true;} return false;">Click Here to Submit</button></center>
 	</div>
 </form>
                             </div>
@@ -344,14 +342,14 @@ function validateform()
 		document.getElementById("idproduct_name").innerHTML ="Product name should contain only alphabets and spaces....";	
 		i=1;		
 	}
-	if(document.getElementById("product_name").value.length < 5)
+	if(document.getElementById("product_name").value.length < 3)
 	{
-		document.getElementById("idproduct_name").innerHTML ="Product name should contain more than 10 characters....";	
+		document.getElementById("idproduct_name").innerHTML ="Product name should contain at least 3 characters....";	
 		i=1;		
 	}
 	if(document.getElementById("product_name").value.length > 100)
 	{
-		document.getElementById("idproduct_name").innerHTML ="Product name should contain less than 20 characters....";	
+		document.getElementById("idproduct_name").innerHTML ="Product name should contain less than 100 characters....";	
 		i=1;		
 	}
 	if(document.getElementById("product_name").value == "")
@@ -386,9 +384,9 @@ function validateform()
 		document.getElementById("idstarting_bid").innerHTML ="Starting bid should not be empty....";	
 		i=1;		
 	}
-	if(document.getElementById("product_cost").value < 100)
+	if(document.getElementById("product_cost").value < 1)
 	{
-		document.getElementById("idproduct_cost").innerHTML ="Product cost should be more than RS.100....";	
+		document.getElementById("idproduct_cost").innerHTML ="Product cost should be more than RS.1....";	
 		i=1;		
 	}
 	
@@ -445,10 +443,8 @@ function changedate(dt)
 {
 	var start_date = dt;
 	if (window.XMLHttpRequest) {
-		// code for IE7+, Firefox, Chrome, Opera, Safari
 		xmlhttp = new XMLHttpRequest();
 	} else {
-		// code for IE6, IE5
 		xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
 	}
 	xmlhttp.onreadystatechange = function() {
@@ -458,5 +454,32 @@ function changedate(dt)
 	};
 	xmlhttp.open("GET","ajaxenddate.php?start_date="+start_date,true);
 	xmlhttp.send();
+}
+
+function setEndDateTime(duration) {
+	var now = new Date();
+	var end = new Date();
+
+	if(duration == '1min')       end = new Date(now.getTime() + 1 * 60 * 1000);
+	else if(duration == '1hour') end = new Date(now.getTime() + 60 * 60 * 1000);
+	else if(duration == '1day')  end = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+	else if(duration == '1week') end = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+	else return;
+
+	// Format date as YYYY-MM-DD
+	var endDate = end.getFullYear() + '-' +
+		String(end.getMonth()+1).padStart(2,'0') + '-' +
+		String(end.getDate()).padStart(2,'0');
+
+	// Format time as HH:MM
+	var endTime = String(end.getHours()).padStart(2,'0') + ':' +
+		String(end.getMinutes()).padStart(2,'0');
+
+	document.getElementById('end_date').value = endDate;
+	document.getElementById('end_time').value = endTime;
+
+	// Show to user
+	document.getElementById('end_display').innerHTML =
+		'Auction ends at: ' + end.toLocaleString();
 }
 </script>

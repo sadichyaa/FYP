@@ -83,7 +83,7 @@ function countdowntimer(id, time)
 								<figure>
 									<div class="snipcart-item block">
 										<div class="snipcart-thumb"	>
-											<a href="single.php?productid=<?php echo $rsproduct[0]; ?>"><img src="<?php echo $imgname; ?>" alt=" " class="img-responsive"style="height: 250px;" /></a>
+											<a href="single.php?productid=<?php echo $rsproduct[0]; ?>"><img src="<?php echo $imgname; ?>" alt=" " class="img-responsive"style="height:250px;width:auto;max-width:100%;object-fit:contain;" /></a>
 											<p><b><a href="single.php?productid=<?php echo $rsproduct[0]; ?>"><?php echo $rsproduct['product_name']; ?></a></b></p>
 <!-- Timer code starts here -->
 <p id="countdowntime<?php echo $rsproduct[0]; ?>"></p>

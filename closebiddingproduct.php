@@ -41,7 +41,7 @@ if(isset($_GET['delid']))
 		{
 			$sql = $sql . " AND customer_id='" . $_SESSION['customer_id'] . "'";
 		}
-		$sql = $sql . " AND product.status='Active' AND end_date_time<'$dt $tim'";
+		$sql = $sql . " AND product.status='Active' AND end_date_time < NOW()";
 		$sql = $sql . " ORDER BY product.product_id DESC";
 		$qsql = mysqli_query($con,$sql);
 		while($rs = mysqli_fetch_array($qsql))

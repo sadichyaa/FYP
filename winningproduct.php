@@ -8,9 +8,10 @@ $rsproduct= mysqli_fetch_array($qsqlproduct);
 $qsqlwinner = mysqli_query($con,$sqlwinner);
 $rswinner = mysqli_fetch_array($qsqlwinner);
 
-if (file_exists("imgproduct/".$rsproduct['product_image'])) 
+$arr_pro_img = unserialize($rsproduct['product_image']);
+if ($arr_pro_img && file_exists("imgproduct/".$arr_pro_img[0])) 
 {
-	$imgname = "imgproduct/".$rsproduct['product_image'];
+	$imgname = "imgproduct/".$arr_pro_img[0];
 } 
 else 
 {

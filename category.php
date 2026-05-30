@@ -2,12 +2,9 @@
 include("header.php");
 if(isset($_POST['submit']))
 {
-	$filename = rand(). $_FILES["category_icon"]["name"];
-	move_uploaded_file($_FILES["category_icon"]["tmp_name"],"imgcategory/".$filename);
 	if(isset($_GET['editid']))
 	{
-		//Update statement starts here
-		$sql = "UPDATE category SET category_name='$_POST[category_name]',category_icon='$filename',description='$_POST[description]',status='$_POST[status]' WHERE  category_id='$_GET[editid]'";
+		$sql = "UPDATE category SET category_name='$_POST[category_name]',description='$_POST[description]',status='$_POST[status]' WHERE category_id='$_GET[editid]'";
 		$qsql = mysqli_query($con,$sql);
 		if(mysqli_affected_rows($con) == 1)
 		{
@@ -17,11 +14,10 @@ if(isset($_POST['submit']))
 		{
 			echo mysqli_error($con);
 		}
-		//Update statement ends here		
 	}
 	else
 	{
-		$sql = "INSERT INTO category(category_name,category_icon,description,status) VALUES('$_POST[category_name]','$filename','$_POST[description]','$_POST[status]')";
+		$sql = "INSERT INTO category(category_name,description,status) VALUES('$_POST[category_name]','$_POST[description]','$_POST[status]')";
 		$qsql = mysqli_query($con,$sql);
 		if(mysqli_affected_rows($con) == 1)
 		{
@@ -67,7 +63,7 @@ if(isset($_GET['editid']))
                             <div class="col-lg-12">
 <div class="row">
 	<div class="col-lg-12 offset-xl-2 col-xl-8 col-sm-12">
-		<form action="" method="post" enctype="multipart/form-data" onsubmit="return validateform()">
+		<form action="" method="post" onsubmit="return validateform()">
 			<div class="checkbox-form checkout-review-order">
 				<h3 class="shoping-checkboxt-title">Category</h3>
 				<div class="row">
@@ -79,29 +75,7 @@ if(isset($_GET['editid']))
 	</p>
 </div>	
 
-<div class="col-lg-12">
-	<p class="single-form-row">
-		<label>Category Icon</label><span class="required">*</span> <span class="errormsg" id="errcategory_icon"></span></label>
-		<input type="file" name="category_icon" id="category_icon" class="form-control" accept="image/*" >
-		<?php
-		if(isset($_GET['editid']))
-		{
-			if($rsedit['category_icon'] == "")
-			{
-				echo "<img src='img/No-Image-Available.png' style='width: 200px;height:250px;'>";
-			}
-			else if(file_exists("imgcategory/".$rsedit['category_icon']))
-			{
-				echo "<img src='imgcategory/$rsedit[category_icon]' style='width: 200px;height:250px;'>";
-			}
-			else
-			{
-				echo "<img src='img/No-Image-Available.png' style='width: 200px;height:250px;'>";
-			}
-		}
-		?>
-	</p>
-</div>
+
 
 <div class="col-lg-12">
 	<p class="single-form-row">
@@ -175,18 +149,6 @@ function validateform()
 		i=1;		
 	}
 	
-	var image =document.getElementById("category_icon").value;
-    var checkimg = image.toLowerCase();
-    if(!checkimg.match(/(\.jpg|\.png|\.JPG|\.PNG|\.gif|\.GIF|\.jpeg|\.JPEG)$/))
-	{
-		document.getElementById("errcategory_icon").innerHTML ="Please enter Image File Extensions .jpg,.png,.jpeg,.gif..";
-		i=1;	
-	}
-	if(document.getElementById("category_icon").value == "")
-	{
-		document.getElementById("errcategory_icon").innerHTML ="Category icon should not be empty....";	
-		i=1;		
-	}
 	if(document.getElementById("status").value == "")
 	{
 		document.getElementById("errstatus").innerHTML ="Kindly select category status....";	

@@ -5,7 +5,8 @@ if(isset($_POST['submit']))
 		if($accbalamt >= 0)
 		{
 		$dttime = date("Y-m-d H:i:s");
-		$sql = "INSERT INTO  bidding (customer_id,product_id,bidding_amount,bidding_date_time,note,status) VALUES('$_SESSION[customer_id]','$_GET[productid]','$_POST[purchase_amount]','$dttime','$_POST[note]','Active')";
+		$note = isset($_POST['note']) ? mysqli_real_escape_string($con, $_POST['note']) : '';
+		$sql = "INSERT INTO bidding (customer_id,product_id,bidding_amount,bidding_date_time,note,status) VALUES('$_SESSION[customer_id]','$_GET[productid]','$_POST[purchase_amount]','$dttime','$note','Active')";
 		$qsql = mysqli_query($con,$sql);
 		if(mysqli_affected_rows($con) == 1)
 		{
@@ -552,29 +553,26 @@ function confirmbidding()
 {
 	if(document.getElementById("purchase_amount").value == "")
 	{
-		alert('Bidding amount not entered..');
+		alert('Please enter a bid amount.');
 		return false;
 	}
-	if(parseFloat(document.getElementById("ending_bid").value)  > parseFloat(document.getElementById("purchase_amount").value))
+	if(isNaN(document.getElementById("purchase_amount").value))
 	{
-		alert('Bidding amount must be greater than Rs' + document.getElementById("ending_bid").value);
+		alert('Bid amount must be a number.');
 		return false;
 	}
-	else if(parseFloat(document.getElementById("purchase_amount").value)  > parseFloat(document.getElementById("max_bid_amt").value))
+	if(parseFloat(document.getElementById("ending_bid").value) >= parseFloat(document.getElementById("purchase_amount").value))
 	{
-		alert('Bidding amount should be lesser than Rs' + document.getElementById("max_bid_amt").value);
+		alert('Your bid must be greater than the current bid of Rs.' + document.getElementById("ending_bid").value);
 		return false;
+	}
+	if(confirm("Confirm your bid of Rs." + document.getElementById("purchase_amount").value + "?") == true)
+	{
+		return true;
 	}
 	else
 	{
-		if(confirm("confrim to bid!!") == true)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 }
 </script>

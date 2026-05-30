@@ -83,13 +83,14 @@ function countdowntimer(id, time)
     <div class="row">
 <?php
 $dttim = date("Y-m-d h:i:s");
-$sqlproduct = "SELECT *,product.product_id as proid FROM winners LEFT JOIN product ON winners.product_id = product.product_id LEFT JOIN customer ON winners.customer_id=customer.customer_id where (winners.status='Pending' OR winners.status='Active') AND winners.customer_id='" . $_SESSION['customer_id'] . "' AND product.customer_id!='0'  ORDER BY winners.winner_id DESC ";
+$sqlproduct = "SELECT *,product.product_id as proid FROM winners LEFT JOIN product ON winners.product_id = product.product_id LEFT JOIN customer ON winners.customer_id=customer.customer_id WHERE (winners.status='Pending' OR winners.status='Active') AND winners.customer_id='" . $_SESSION['customer_id'] . "' ORDER BY winners.winner_id DESC ";
 $qsqlproduct = mysqli_query($con,$sqlproduct);
 		while($rsproduct = mysqli_fetch_array($qsqlproduct))
 		{
-				if (file_exists("imgproduct/".$rsproduct['product_image'])) 
+				$arr_pro_img = unserialize($rsproduct['product_image']);
+				if ($arr_pro_img && file_exists("imgproduct/".$arr_pro_img[0])) 
 				{
-					 $imgname = "imgproduct/".$rsproduct['product_image'];
+					 $imgname = "imgproduct/".$arr_pro_img[0];
 				} 
 				else 
 				{
@@ -110,38 +111,43 @@ $qsqlproduct = mysqli_query($con,$sqlproduct);
 ?>
         
 		
-		<div class="col-md-12">
+		<div class="col-md-6 col-sm-12" style="margin-bottom:20px;">
 			
-            <div class="product-grid8 border">
-                <div class="product-image8">
+            <div class="product-grid8 border" style="border-radius:8px; overflow:hidden;">
+                <div class="product-image8" style="height:250px; overflow:hidden; display:flex; align-items:center; justify-content:center; background:#f9f9f9;">
                     <a href="single.php?productid=<?php echo $rsproduct['proid']; ?>">
-                        <img class="pic-1" src="<?php echo $imgname; ?>">
-                        <img class="pic-2" src="<?php echo $imgwinner; ?>">
+                        <img class="pic-1" src="<?php echo $imgname; ?>" style="max-height:250px; max-width:100%; width:auto; object-fit:contain;">
+                        <img class="pic-2" src="<?php echo $imgwinner; ?>" style="max-height:250px; max-width:100%; width:auto; object-fit:contain;">
                     </a>
-                   
                 </div>
-                <div class="product-content">
-                    <span class="product-shipping" style="color: brown;"><b>Product : <?php echo $rsproduct['product_name']; ?></b></span>
-                    <span class="product-shipping" style="color: brown;"><b>Product Code : <?php echo $rsproduct['product_name']; ?> </b></span>
+                <div class="product-content" style="padding:15px;">
+                    <span class="product-shipping" style="color:brown;"><b>Product:</b> <?php echo $rsproduct['product_name']; ?></span>
+                    <span class="product-shipping" style="color:brown;"><b>Product ID:</b> <?php echo $rsproduct['proid']; ?></span>
                     <a class="all-deals" href="single.php?productid=<?php echo $rsproduct['proid']; ?>" target="_blank">View Product <i class="fa fa-angle-right icon"></i></a>
                 </div>
-                <div class="product-content">
-                    <span class="product-shipping" style="color: green;"><b>Winner : <?php echo $rsproduct['customer_name']; ?></b></span>
-                    <span class="product-shipping" style="color: green;"><b>From : <?php echo $rsproduct['city']; ?></b></span>
-                    <span class="product-shipping" style="color: green;"><b>Amount payable: : Rs. <?php echo $rsproduct['winning_bid']; ?></b></span>
-
+                <div class="product-content" style="padding:15px;">
+                    <span class="product-shipping" style="color:green;"><b>Winner:</b> <?php echo $rsproduct['customer_name']; ?></span>
+                    <span class="product-shipping" style="color:green;"><b>Amount Payable:</b> Rs. <?php echo $rsproduct['winning_bid']; ?></span>
+                    <span class="product-shipping" style="color:<?php echo ($rsproduct['status']=='Active') ? 'green' : 'orange'; ?>;"><b>Status:</b> <?php echo ($rsproduct['status']=='Active') ? 'Paid' : 'Pending Payment'; ?></span>
 
 <?php
-if($rsproduct[6] == "Pending")
+if($rsproduct['status'] == "Pending")
 {
 ?>
-<a class="all-deals" href="paywinningbid.php?winner_id=<?php echo $rsproduct['winner_id']; ?>">Claim winning bid <i class="fa fa-angle-right icon"></i></a>
-
-
+<a class="all-deals" style="background:#4CAF50;" href="esewa_payment.php?winner_id=<?php echo $rsproduct['winner_id']; ?>">
+    Pay with eSewa <i class="fa fa-angle-right icon"></i>
+</a>
+<?php
+}
+else
+{
+?>
+<a class="all-deals" style="background:#0081c2;" href="paymentreceiptwinningbid.php">
+    View Receipt <i class="fa fa-angle-right icon"></i>
+</a>
 <?php
 }
 ?>
-
                 </div>
             </div>
         </div>

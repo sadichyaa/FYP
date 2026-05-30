@@ -42,15 +42,31 @@ $rsproduct= mysqli_fetch_array($qsqlproduct);
 		    <td><b>Customer</b> <?php echo $rspayment['customer_name']; ?></td>
 			<td><b>Payment type</b> <?php echo $rspayment['card_type']; ?></td>
 		</tr>
-			<tr>
-			<th><b>Paid amount</b></th>
-			<td>Rs. <?php echo $rspayment['purchase_amount']; ?>
-			</td>
+		<?php
+		$winning_bid = $rspayment['purchase_amount'];
+		$commission  = $rspayment['cvv_number']; // we stored commission in cvv_number field
+		if(!is_numeric($commission) || $commission <= 0) {
+			$commission = round($winning_bid * 0.05, 2);
+		}
+		$total = $winning_bid;
+		$bid_only = round($winning_bid - $commission, 2);
+		?>
+		<tr>
+			<th><b>Winning Bid</b></th>
+			<td>Rs. <?php echo number_format($bid_only, 2); ?></td>
 		</tr>
-			<tr>
-			<th><b>Product code :</b> <?php echo $rsproduct['product_id']; ?></th>
-			<td><b>Product name :</b>  <?php echo $rsproduct['product_name']; ?></td>
-			</tr>
+		<tr>
+			<th><b>Service Charge (5%)</b></th>
+			<td style="color:red;">Rs. <?php echo number_format($commission, 2); ?></td>
+		</tr>
+		<tr>
+			<th><b>Total Paid</b></th>
+			<td style="color:green;"><b>Rs. <?php echo number_format($total, 2); ?></b></td>
+		</tr>
+		<tr>
+			<th><b>Product code:</b> <?php echo $rsproduct['product_id']; ?></th>
+			<td><b>Product name:</b>  <?php echo $rsproduct['product_name']; ?></td>
+		</tr>
 </table>
 </div><br><hr>
 <center><input type="button" name='print' class="btn btn-primary"  onclick="printDiv('printableArea')" value="Click here to Print"></center>

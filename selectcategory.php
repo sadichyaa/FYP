@@ -20,22 +20,11 @@ if(!isset($_SESSION['customer_id']))
 		$qsql = mysqli_query($con,$sql);
 		while($rs = mysqli_fetch_array($qsql))
 		{
-			if (file_exists("imgcategory/".$rs['category_icon'])) 
-			{
-				 $imgname = "imgcategory/".$rs['category_icon'];
-			} 
-			else 
-			{
-				$imgname = "img/No-Image-Available.png";
-			}
 		?>
-				<div class="col-md-4 w3l_banner_nav_right_banner3_btml"  >
-					<div class="view view-tenth" onclick='window.location=`product.php?categoryid=<?php echo $rs['category_id']; ?>`' style="Cursor:pointer;">
-						<img src="<?php echo $imgname; ?>" style="height:280px;width: 100%;" class="img-responsive" />
-						<div class="mask">
-							<h4><?php echo $rs['category_name']; ?></h4>
-							<p><?php echo $rs['description']; ?></p>
-						</div>
+				<div class="col-md-4 w3l_banner_nav_right_banner3_btml">
+					<div class="view view-tenth" onclick='window.location=`product.php?categoryid=<?php echo $rs['category_id']; ?>`' style="cursor:pointer; padding:20px; border:1px solid #ddd; border-radius:8px; text-align:center; margin-bottom:15px;">
+						<h4><?php echo $rs['category_name']; ?></h4>
+						<p><?php echo $rs['description']; ?></p>
 					</div>
 				<hr>
 				</div>

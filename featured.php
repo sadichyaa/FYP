@@ -43,15 +43,7 @@ function countdowntimer(id, time)
 		$qsqlcategory = mysqli_query($con,$sqlcategory);
 		while($rscategory = mysqli_fetch_array($qsqlcategory))
 		{
-			$sqlproduct = "select * from product WHERE status='Active' AND category_id='$rscategory[category_id]'  AND product.customer_id!='0'   AND end_date_time>'$dt $tim' ";
-			if($_GET['auctiontype'] == "featured Auctions")
-			{
-				$sqlproduct = $sqlproduct  . " order by product_id DESC limit 0,3";
-			}
-			else
-			{
-				$sqlproduct = $sqlproduct  . " order by product_id DESC limit 0,3";
-			}
+			$sqlproduct = "select * from product WHERE status='Active' AND category_id='$rscategory[category_id]' AND end_date_time > NOW() order by product_id DESC limit 0,3";
 			$qsqlproduct = mysqli_query($con,$sqlproduct);
 			if(mysqli_num_rows($qsqlproduct) >= 1)
 			{
@@ -63,9 +55,10 @@ function countdowntimer(id, time)
 <?php
 			while($rsproduct = mysqli_fetch_array($qsqlproduct))
 			{
-				if (file_exists("imgproduct/".$rsproduct['product_image'])) 
+				$arr_pro_img = unserialize($rsproduct['product_image']);
+				if ($arr_pro_img && file_exists("imgproduct/".$arr_pro_img[0])) 
 				{
-					 $imgname = "imgproduct/".$rsproduct['product_image'];
+					 $imgname = "imgproduct/".$arr_pro_img[0];
 				} 
 				else 
 				{
@@ -77,7 +70,7 @@ function countdowntimer(id, time)
 	<figure class="card card-product">
 		<div class="img-wrap">
 			<center>
-				<a href="single.php?productid=<?php echo $rsproduct[0]; ?>"><img src="<?php echo $imgname; ?>" alt=" " class="img-responsive"style="height: 250px;" /></a>
+				<a href="single.php?productid=<?php echo $rsproduct[0]; ?>"><img src="<?php echo $imgname; ?>" alt=" " class="img-responsive"style="height:250px;width:auto;max-width:100%;object-fit:contain;" /></a>
 			</center>
 		</div>
 		<figcaption class="info-wrap">

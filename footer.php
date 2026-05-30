@@ -91,6 +91,30 @@ $(document).ready( function () {
     $('#datatable').DataTable();
 } );
 </script>
+
+<?php
+// Winner popup - fires after full page load
+if(isset($_SESSION['winner_popup_id']) && isset($_SESSION['winner_popup_name']))
+{
+    $popup_winner_id   = $_SESSION['winner_popup_id'];
+    $popup_product_name = $_SESSION['winner_popup_name'];
+    // Clear session so it only shows once
+    unset($_SESSION['winner_popup_id']);
+    unset($_SESSION['winner_popup_name']);
+?>
+<script>
+window.onload = function() {
+    if(confirm('🎉 Congratulations! You won the auction for:\n\n<?php echo $popup_product_name; ?>\n\nClick OK to proceed to eSewa payment.'))
+    {
+        window.location = 'esewa_payment.php?winner_id=<?php echo $popup_winner_id; ?>';
+    }
+    else
+    {
+        window.location = 'viewwinningbid.php';
+    }
+};
+</script>
+<?php } ?>
     </body>
 
 <!-- Mirrored from demo.hasthemes.com/juta-preview/juta-v1/index-3.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 25 Dec 2019 04:55:35 GMT -->
